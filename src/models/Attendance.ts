@@ -21,3 +21,5 @@ const attendaceSchema = new Schema ({
 },
 {timestamps:true}
 )
+
+export const Attendacemodel = model("attendacemodel", attendaceSchema)
