@@ -14,7 +14,7 @@ export const signupHod = async (req: Request, res: Response)=>{
 
 
         //validation
-        if(!trimmedUsername || !trimmedUserId || !trimmedPassword || !branch ){
+        if(!trimmedUsername || !trimmedUserId || !trimmedPassword || !trimmedBranch ){
             return res.status(400).json({
                 msg:"All fields are required"  ///like a H0D01
             })

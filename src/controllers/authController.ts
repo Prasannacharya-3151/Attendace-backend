@@ -55,8 +55,8 @@ export const login = async (req: Request, res: Response ) => {
         //generating the tok en
 
         const token = jwt.sign(
-            {id : user._id, role:user.role},
-            process.env.JWT_SECRET || "secret",
+            {id : user._id, role:user.role},//payload=data stores token
+            process.env.JWT_SECRET || "secret",//secrete key
             { expiresIn : "1d" }
         )
 
