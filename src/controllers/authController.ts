@@ -19,7 +19,7 @@ export const login = async (req: Request, res: Response ) => {
             return res.status(400).json({
                 msg:"All the fields are required"
             })
-        }
+        } 
         //checks the role matching with the userId
         if(
             (trimmedRole === "student" && !/^4AL\d{2}[A-Z]{2}\d{3}$/.test(trimmedUserId)) ||

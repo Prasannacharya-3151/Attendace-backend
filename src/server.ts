@@ -2,7 +2,7 @@ import express from "express"
 import dotenv from "dotenv"
 import { connectDB } from "./config/db"
 import authRouter from "./routes/auth"
-import hodRouter from ".routes/hod"
+import hodRouter from "./routes/hod"
 
 dotenv.config()
 const app = express()

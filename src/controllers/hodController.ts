@@ -14,15 +14,15 @@ export const signupHod = async (req: Request, res: Response)=>{
 
 
         //validation
-        if(!username || !userId || !password || !branch ){
+        if(!trimmedUsername || !trimmedUserId || !trimmedPassword || !branch ){
             return res.status(400).json({
-                msg:"Invalid HOD ID formate"  ///like a H0D01
+                msg:"All fields are required"  ///like a H0D01
             })
         }
 
         if(!/^HOD\d{2,}$/.test(userId)){
             return res.status(400).json({
-                msg:"HOD alreay exisets with ID"
+                msg:"Invalid HOD ID formate"
             })
         }
 
@@ -32,7 +32,7 @@ export const signupHod = async (req: Request, res: Response)=>{
             userId, role:"hod"
         })
         if(existing){
-            res.status(400).json({
+            return res.status(400).json({
                 msg:"HOD already exists with this ID"
             })
         }
