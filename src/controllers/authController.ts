@@ -1,13 +1,13 @@
 import { Request, Response } from "express";
-import {UserModel} from "../models/User.js"
+import {UserModel} from "../models/User"
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
 
-export const login = async (req: Request, res:Response ) => {
+export const login = async (req: Request, res: Response ) => {
     try {
         const { username, userId, password, role } = req.body;
         
-        //timmed values
+        //trimmed values
         const trimmedUsername = username?.trim();
         const trimmedUserId = userId?.trim();
         const trimmedPassword = password?.trim();
@@ -41,10 +41,10 @@ export const login = async (req: Request, res:Response ) => {
             })
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10)
+        
 
         //comparing the password
-        const isMatch = await bcrypt.compare(hashedPassword, user.password);
+        const isMatch = await bcrypt.compare(trimmedPassword, user.password);
 
         if(!isMatch){
             return res.status(400).json({
@@ -52,7 +52,7 @@ export const login = async (req: Request, res:Response ) => {
             })
         }
 
-        //generating the token
+        //generating the tok en
 
         const token = jwt.sign(
             {id : user._id, role:user.role},
@@ -72,3 +72,7 @@ export const login = async (req: Request, res:Response ) => {
         })
     }
 }
+
+///HOD (or you, as developer) will insert credentials directly into the database.
+
+//Students, Faculty, and HOD will then just log in with those given credentials.

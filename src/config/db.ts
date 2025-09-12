@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const connectDB = async() =>{
+export const connectDB = async() =>{
     try{
         await mongoose.connect(process.env.MONGO_URL || "");  //|| "" fallback(empty string) if MONGO_URL is missing, so code wont crash at runtime but it will throw an error 
         console.log("mongoDB connected");//redas the MongoDB connection string (URL) from our .env file 
