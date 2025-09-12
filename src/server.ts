@@ -9,7 +9,7 @@ const app = express()
 
 app.use(express.json());//middelware
 app.use("/api/auth", authRouter)
-app.use("/api/auth", hodRouter)
+app.use("/api/hod", hodRouter)
 
 const PORT = process.env.PORT || 5000 ;
 
