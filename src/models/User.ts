@@ -6,21 +6,17 @@ interface User {
     password: string;
     role: "student" | "faculty" | "hod";
     branch: "CSE" | "AIML" | "DS" | "ISE" | "CSD" | "IOT" | "ME" | "CV" | "AG" | "AS";
-    semester:"1SEM" | "2SEM" | "3SEM" | "4SEM" | "5SEM" | "6SEM" | "7SEM" | "7SEM";
-    section:"A"|"B"|"C"|"D";
-    subject?:mongoose.Types.ObjectId[];
+    
     isFirstLogin?:boolean;
 }
 
 const userSchema = new Schema({
     username:{type: String, required: true, trim: true},
-    userId:{type:String, require:true, unique: true, trim :true},
+    userId:{type:String, required:true, unique: true, trim :true},
     password:{type:String, required:true, trim :true},
     role:{type: String, enum:["student", "faculty", "hod"], required:true, trim:true},
     branch: {type:String, enum:["CSE","AIML","DS","ISE","CSD","IOT","ME","CV","AG","AS"], required:true, trim:true},
-    semester: {type:String, enum:["1SEM" , "2SEM" , "3SEM" , "4SEM" , "5SEM" , "6SEM" , "7SEM" , "7SEM"], required:true, trim:true},
-    section: {type:String, enum:["A", "B", "C", "D"], required:true, trim:true},
-    subject:{type:Schema.Types.ObjectId, ref: "Subject"},
+    
     isFirstLogin: { type: Boolean, default:true},
 },
  { timestamps: true }
