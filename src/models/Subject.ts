@@ -1,8 +1,8 @@
 import mongoose, {Schema, model } from "mongoose";
 
 interface Subject {
-    name:String   //subject name
-    code:String   //subject code this will be uunique
+    name:string   //subject name
+    code:string   //subject code this will be uunique
     faculty:mongoose.Types.ObjectId; //userrole ="faculty"
     students:mongoose.Types.ObjectId; //array of the student
 }

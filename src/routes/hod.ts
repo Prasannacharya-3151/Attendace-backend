@@ -8,7 +8,8 @@ const router = Router();
 router.post("/signup", signupHod)
 router.get("/dashboard", authMiddleware, roleMiddleware(["hod"]), (req, res)=>{
     res.json({
-        msg:"Welcome HOD", user: req.user
+        msg:"Welcome HOD",
+        user: req.user
     })
 })
 export default router;
