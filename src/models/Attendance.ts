@@ -19,7 +19,7 @@ const attendaceSchema = new Schema ({
         required:true,
     }
 },
-{timestamps:true}
+  {timestamps:true}
 )
 
-export const Attendacemodel = model("attendacemodel", attendaceSchema)
+export const AttendaceModel = model("attendaceSchema", attendaceSchema)

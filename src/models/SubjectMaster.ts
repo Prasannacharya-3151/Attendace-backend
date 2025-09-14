@@ -1,7 +1,7 @@
 import mongose, {Schema, model } from "mongoose";
 
 interface SubjectMaster{
-    name: string;  //suject name
+    name: string;  //subject name
     code: string; //subject code
 }
 
@@ -13,4 +13,4 @@ const subjectMasterSchema = new Schema({
  { timestamps: true }
 );
 
-export const SubjectMasterSchema = model("SubjectMaster", subjectMasterSchema);
+export const SubjectMasterModel = model("subjectMasterSchema", subjectMasterSchema);

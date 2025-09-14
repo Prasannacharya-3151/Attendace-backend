@@ -23,4 +23,4 @@ const subjectOfferingSchema = new Schema({
   {timestamps: true}
 )
 
-export const SubjectOfferingModel = model("SubjectOffering", subjectOfferingSchema)
+export const SubjectOfferingModel = model("subjectOfferingSchema", subjectOfferingSchema)
