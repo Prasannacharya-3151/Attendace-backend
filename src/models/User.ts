@@ -5,9 +5,9 @@ interface User {
     userId: string;
     password: string;
     role: "student" | "faculty" | "hod";
-    branch: "CSE" | "AIML" | "DS" | "ISE" | "CSD" | "IOT" | "ME" | "CV" | "AG" | "AS";
-    semester:"1SEM" | "2SEM" | "3SEM" | "4SEM" | "5SEM" | "6SEM" | "7SEM" | "8SEM";
-    section:"A"|"B"|"C"|"D";
+    branch?: "CSE" | "AIML" | "DS" | "ISE" | "CSD" | "IOT" | "ME" | "CV" | "AG" | "AS";
+    semester?:"1SEM" | "2SEM" | "3SEM" | "4SEM" | "5SEM" | "6SEM" | "7SEM" | "8SEM";
+    section?:"A"|"B"|"C"|"D";
     isFirstLogin?:boolean;
 }
 

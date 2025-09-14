@@ -15,7 +15,7 @@ export const login = async (req: Request, res: Response ) => {
 
 
         //checking requird fields
-        if (!trimmedUsername || !trimmedUserId || !trimmedPassword || !trimmedRole){
+        if (!trimmedUserId || !trimmedPassword || !trimmedRole){
             return res.status(400).json({
                 msg:"All the fields are required"
             })
