@@ -13,7 +13,7 @@ export const registerFaculty = async (req: Request, res: Response ) =>{
 
 
         //check all the fielad are required
-        if (!username || !userId || !password || ! branch){
+        if (!trimmedUsername || !trimmedUserId || !trimmedPassword || ! trimmedBranch){
             return res.status(400).json({
                 msg:"All fields are required"
             })
@@ -47,7 +47,7 @@ export const registerFaculty = async (req: Request, res: Response ) =>{
 
     } catch (err) {
         return res.status(500).json({
-            msg:"Server error:", error 
+            msg:"Server error:", err 
         })
     }
 }
