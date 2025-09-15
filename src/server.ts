@@ -13,7 +13,7 @@ app.use("/api/auth", authRouter)
 app.use("/api/hod", hodRouter)
 app.use("/api/subject", subjectRouter)
 
-const PORT = process.env.PORT || 5000 ;
+const PORT = process.env.PORT || 5000;
 
 
 connectDB().then(() =>{
