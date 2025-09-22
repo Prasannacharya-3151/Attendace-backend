@@ -10,10 +10,11 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-export async function sendCredentialsEmail(to: string, userId:string, password: string){
+export async function sendCredentialsEmail(to: string, username:string, userId:string, password: string){
     const text = `Your student account has been created.
 
-    UserId:${userId}
+    Username: ${username}
+    UserId: ${userId}
     Password: ${password}
 
     please login nad change your password on first login.`;
