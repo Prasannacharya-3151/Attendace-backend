@@ -6,5 +6,5 @@ import { roleMiddleware } from "../middleware/roleMiddleware";
 
 const router = Router();
 
-router.post("/students/bulk", authMiddleware, roleMiddleware(["hod"]), upload.single("file"), bulkRegistrationStudents);
+router.post("/students/bulk-register", authMiddleware, roleMiddleware(["hod"]), upload.single("file"), bulkRegistrationStudents);
 export default router;

@@ -17,8 +17,8 @@ const userSchema = new Schema({
     password:{type:String, required:true, trim :true},
     role:{type: String, enum:["student", "faculty", "hod"], required:true, trim:true},
     branch: {type:String, enum:["CSE","AIML","DS","ISE","CSD","IOT","ME","CV","AG","AS"], required:true, trim:true},
-    semester: {type:String, enum:["1SEM" , "2SEM" , "3SEM" , "4SEM" , "5SEM" , "6SEM" , "7SEM" , "8SEM"], required:true, trim:true},
-    section: {type:String, enum:["A", "B", "C", "D"], required:true, trim:true},
+    semester: {type:String, enum:["1SEM" , "2SEM" , "3SEM" , "4SEM" , "5SEM" , "6SEM" , "7SEM" , "8SEM"], required: function(this: any) { return this.role === "student"; }, trim:true},
+    section: {type:String, enum:["A", "B", "C", "D"],  required: function(this: any) { return this.role === "student"; }, trim:true},
     isFirstLogin: { type: Boolean, default:true},
 },
  { timestamps: true }

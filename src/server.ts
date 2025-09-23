@@ -6,8 +6,8 @@ import { connectDB } from "./config/db"
 import authRouter from "./routes/auth"
 import hodRouter from "./routes/hod"
 import subjectRouter from "./routes/subject"
-import subjectBulkRoutes from "./routes/studentBulk"
-import hodCsvRoutes from "./routes/hodCsvRoutes"
+import subjectBulkRouter from "./routes/studentBulk"
+import hodCsvRouter from "./routes/hodCsvRoutes"
 
 dotenv.config()
 
@@ -18,8 +18,8 @@ app.use(express.json());//middelware
 app.use("/api/auth", authRouter)
 app.use("/api/hod", hodRouter)
 app.use("/api/subject", subjectRouter)
-app.use("/api/hod", hodCsvRoutes)
-app.use("/api/subject", subjectBulkRoutes)
+app.use("/api/hod", hodCsvRouter)
+app.use("/api/subject", subjectBulkRouter)
 
 const PORT = process.env.PORT || 5000;
 
