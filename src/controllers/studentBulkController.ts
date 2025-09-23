@@ -1,127 +1,142 @@
-import { Requset, Response } from "express";
+import { Request, Response } from "express";
 import fs from "fs";
-import path from "path"
+import path from "path";
 import csvParser from "csv-parser";
-import bcrypt from "bcryptjs"
+import bcrypt from "bcryptjs";
 import { UserModel } from "../models/User";
 import { sendCredentialsEmail } from "../services/emailService";
 
-function generateRandomPassword(name: string){
-    const first = String(name || "user").split(" ")[0] || "user";
-    const num = Math.floor(100 + Math.random() * 900);
-
-    //its a simple and predictable: First@123
-    return `${first}@${num}`;
+// Generating a  random password
+function generateRandomPassword(name: string) {
+  const first = String(name || "user").split(" ")[0] || "user";
+  const num = Math.floor(100 + Math.random() * 900);
+  return `${first}@${num}`;
 }
 
-export const bulkRegistrationStudents = async (req: Request, res: Response)=>{
-    try {
-        if(!req.file){
-            return res.status(400).json({
-                msg:"CSV file required (from field : file)"
-            })
-        }
-
-        const filePath = path.resolve(req.file.path);
-        const rows: any[] = [];
-
-        //its a CSV parse like a header representaion
-
-        await new Promise<void>((resolve, reject)=>{
-            fs.createReadStream(filePath)
-            .pipe(csvParser())
-            .on("date", (row) => {
-                rows.push(row);
-            })
-            .on("end", ()=> resolve())
-            .on("error", (err) => reject(err));
-        })
-        const created: { userId: string; username: string; email?:string; password: string;}[] = [];
-        const skipped: { row: any; reason: string;}[] = [];
-        const error : { row: any; error: any} [] = [];
-
-        for (const row of rows ){
-            try{
-                const username = (row.username || row.name || "").trim();
-                const userId = (row.userID || row.usn || row .usnno || "").trim();
-                const email = (row.email || "").trim();
-                const branch = (row.branch || "").trim();
-                const semester = (row.semester || "").trim();
-                const section = (row.section || "").trim();
-
-                if(!username || !userId || !branch || !semester || !section){
-                    skipped.push({
-                        row, reason:"Missing required fields (username, userId, branch, semster, section"
-                        
-                    })
-                    continue;
-            }
-
-            //password genertion
-            let plainPassword = (row.password || "").trim();
-            if(!plainPassword) plainPassword = generateRandomPassword(username);
-
-            const hashed = await bcrypt. hash(plainPassword, 10);
-
-            const newStudent = new UserModel({
-                username,
-                userId,
-                password: hashed,
-                role:"student",
-                branch,
-                semester,
-                section,
-                isFirstLogin:true,
-            })
-
-            await newStudent.save();
-
-            
-            //sending the email (its email configuration )
-            try{
-                await sendCredentialsEmail(email, username, userId, plainPassword);
-            
-            } catch(mailErr){
-                //if emial fails we still keep account but record will show error in the interface
-                error.push({
-                    row, 
-                    error: `Email send failed: ${String(mailErr)}`
-                })
-            }
-
-            created. push({
-                userId, username, email, password:plainPassword
-            })
-        } catch (innerErr){
-            error.push({row, error: String(innerErr) });
-        }
+//  Bulk register students from CSV
+export const bulkRegistrationStudents = async (req: Request, res: Response): Promise<void> => {
+  try {
+    if (!req.file) {
+      res.status(400).json({ 
+        msg: "CSV file required (form field: file)" 
+    });
+      return;
     }
 
-    //remove uploded files
-    try {
-        fs.unlinkSync(filePath);
-    } catch(e) {}
-    
+    const filePath = path.resolve(req.file.path);
+    const rows: any[] = [];
 
+    await new Promise<void>((resolve, reject) => {
+      fs.createReadStream(filePath)
+        .pipe(csvParser())
+        .on("data", (row) => rows.push(row))
+        .on("end", () => resolve())
+        .on("error", (err) => reject(err));
+    });
 
-    //building csv created credentials to return to HOD (so theeey can download/store it)
-    const header = "username, userId, email, password\n";
-    const csvLines = [header, ...created.map(c=> `${c.username},${c.userId},${c.email || ""},${c.password}`)];
-    const csvData = csvLines.join("\n");
+    const created: any[] = [];
 
-    //responding with a downloadable csv file
-    res.setHeader("Content-Type", "tect/csv");
-    res.setHeader("Content-Disposition", "attachment; filename=credentials.csv");
+    for (const row of rows) {
+      const username = (row.username || "").trim();
+      const userId = (row.userId || "").trim();
+      const branch = (row.branch || "").trim();
+      const semester = (row.semester || "").trim();
+      const section = (row.section || "").trim();
+      const email = (row.email || "").trim();
 
-    //also set a header with summary as json String (optinal)
+      if (!username || !userId || !branch || !semester || !section) continue;
 
-    res.setHeader("X-CREATED-Count", String(created.length));
-    res.send(csvData);
-} catch (err) {
-    console.error("bulkRegistrationStudent error:", err);
-    return res.status(500).json({
-        msg:"server error", err: String(err)
-    })
-}
-  
-}
+      let plainPassword = (row.password || "").trim();
+      if (!plainPassword) plainPassword = generateRandomPassword(username);
+      const hashed = await bcrypt.hash(plainPassword, 10);
+
+      const newStudent = new UserModel({
+        username,
+        userId,
+        password: hashed,
+        role: "student",
+        branch,
+        semester,
+        section,
+        isFirstLogin: true,
+      });
+      await newStudent.save();
+
+      if (email) {
+        try {
+          await sendCredentialsEmail(email, username, userId, plainPassword);
+        } catch {}
+      }
+
+      created.push({ username, userId, email, password: plainPassword });
+    }
+
+    fs.unlinkSync(filePath);
+
+    res.status(201).json({
+      msg: "Students registered successfully",
+      createdCount: created.length,
+      created,
+    });
+  } catch (err) {
+    console.error("bulkRegistrationStudents error:", err);
+    res.status(500).json({ 
+        msg: "Server error", err: String(err) 
+    });
+  }
+};
+
+//  Delete student from the file 
+export const deleteStudent = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const student = await UserModel.findOneAndDelete({ userId, role: "student" });
+    if (!student) return res.status(404).json({ msg: "Student not found" });
+
+    res.json({ 
+        msg: "Student deleted successfully", student 
+    });
+  } catch (err) {
+    res.status(500).json({ 
+        msg: "Server error", err: String(err) 
+    });
+  }
+};
+
+//  Update student from the file 
+export const updateStudent = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+    const { username, branch, semester, section } = req.body;
+
+    const student = await UserModel.findOne({ userId, role: "student" });
+    if (!student) return res.status(404).json({ msg: "Student not found" });
+
+    if (username) student.username = username;
+    if (branch) student.branch = branch;
+    if (semester) student.semester = semester;
+    if (section) student.section = section;
+
+    await student.save();
+
+    res.json({ 
+        msg: "Student updated successfully", student 
+    });
+  } catch (err) {
+    res.status(500).json({ 
+        msg: "Server error", err: String(err) 
+    });
+  }
+};
+
+// Get all students
+export const getAllStudents = async (req: Request, res: Response) => {
+  try {
+    const students = await UserModel.find({ role: "student" }).select("-password");
+    res.json(students);
+  } catch (err) {
+    res.status(500).json({ 
+        msg: "Server error", err: String(err) 
+    });
+  }
+};
