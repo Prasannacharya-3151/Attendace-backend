@@ -1,9 +1,9 @@
 import { Router } from "express";
-import multer, { MulterError } from "multer";
+import multer from "multer";
 import { bulkRegistrationStudents, deleteStudent, updateStudent, getAllStudents } from "../controllers/studentBulkController";
 import { authMiddleware } from "../middleware/authMiddleware";
 import { roleMiddleware } from "../middleware/roleMiddleware";  
-import { get } from "http";
+// import { get } from "http";
 
 const upload = multer({
     dest: "uploads/"
