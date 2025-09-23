@@ -10,10 +10,11 @@ import subjectBulkRoutes from "./routes/studentBulk"
 import hodCsvRoutes from "./routes/hodCsvRoutes"
 
 dotenv.config()
-app.use(cors());
-const app = express()
 
+const app = express()
+app.use(cors());
 app.use(express.json());//middelware
+
 app.use("/api/auth", authRouter)
 app.use("/api/hod", hodRouter)
 app.use("/api/subject", subjectRouter)
